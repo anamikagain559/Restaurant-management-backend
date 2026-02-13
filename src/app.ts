@@ -22,8 +22,7 @@ app.use(passport.session())
 app.use(cookieParser())
 app.use(express.json())
 const allowedOrigins = [
-  "https://digital-wallet-frontend-rho.vercel.app",
-  "http://localhost:3000",
+  "http://localhost:5173",
 ];
 
 app.use(
