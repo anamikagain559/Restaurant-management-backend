@@ -3,9 +3,11 @@ import { AuthRoutes } from "../modules/auth/auth.route"
 import { UserRoutes } from "../modules/user/user.route"
 
 import { reviewsRoutes } from "../modules/reviews/reviews.route"
-import { TravelPlanRoutes } from "../modules/travelPlan/travelPlan.route";
-import {paymentsRoutes} from "../modules/payments/payment.route";
+import { paymentsRoutes } from "../modules/payments/payment.route";
 import { OtpRoutes } from "../modules/otp/otp.route"
+import { MenuRoutes } from "../modules/menu/menu.route"
+import { ReservationRoutes } from "../modules/reservation/reservation.route"
+import { OrderRoutes } from "../modules/order/order.route"
 export const router = Router()
 
 const moduleRoutes = [
@@ -18,9 +20,18 @@ const moduleRoutes = [
         route: AuthRoutes
     },
     {
-         path: "/travel-plans",
-        route: TravelPlanRoutes 
-    }, {
+        path: "/menu",
+        route: MenuRoutes
+    },
+    {
+        path: "/reservations",
+        route: ReservationRoutes
+    },
+    {
+        path: "/orders",
+        route: OrderRoutes
+    },
+    {
         path: "/otp",
         route: OtpRoutes
     },
@@ -29,7 +40,7 @@ const moduleRoutes = [
         path: "/payments",
         route: paymentsRoutes
     },
-        {
+    {
         path: "/reviews",
         route: reviewsRoutes
     },

@@ -1,20 +1,16 @@
 import { Schema, model, Types } from "mongoose";
+import { IReview } from "./reviews.interface";
 
-const reviewSchema = new Schema(
+const reviewSchema = new Schema<IReview>(
   {
     reviewer: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    reviewee: {
-      type: Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    travelPlan: {
-      type: Types.ObjectId,
-      ref: "TravelPlan",
+    menuItem: {
+      type: Schema.Types.ObjectId,
+      ref: "Menu",
       required: true,
     },
     rating: {
@@ -28,12 +24,12 @@ const reviewSchema = new Schema(
       trim: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 reviewSchema.index(
-  { reviewer: 1, travelPlan: 1 },
+  { reviewer: 1, menuItem: 1 },
   { unique: true }
 );
 
-export const Review = model("Review", reviewSchema);
+export const Review = model<IReview>("Review", reviewSchema);

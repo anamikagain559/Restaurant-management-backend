@@ -55,7 +55,7 @@ const getNewAccessToken = async (refreshToken: string) => {
 }
 const resetPassword = async (oldPassword: string, newPassword: string, decodedToken: JwtPayload) => {
 
-    const user = await User.findById(decodedToken.userId)
+    const user = await User.findById(decodedToken.userId).select("+password")
 
     const isOldPasswordMatch = await bcryptjs.compare(oldPassword, user!.password as string)
     if (!isOldPasswordMatch) {
@@ -72,7 +72,7 @@ const resetPassword = async (oldPassword: string, newPassword: string, decodedTo
 //user - login - token (email, role, _id) - booking / payment / booking / payment cancel - token 
 const changePassword = async (oldPassword: string, newPassword: string, decodedToken: JwtPayload) => {
 
-    const user = await User.findById(decodedToken.userId)
+    const user = await User.findById(decodedToken.userId).select("+password")
 
     const isOldPasswordMatch = await bcryptjs.compare(oldPassword, user!.password as string)
     if (!isOldPasswordMatch) {
@@ -89,5 +89,5 @@ const changePassword = async (oldPassword: string, newPassword: string, decodedT
 export const AuthServices = {
     // credentialsLogin,
     getNewAccessToken,
-    resetPassword,changePassword
+    resetPassword, changePassword
 }

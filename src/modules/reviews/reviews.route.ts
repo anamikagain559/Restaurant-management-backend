@@ -11,16 +11,16 @@ const router = Router();
  */
 router.post(
   "/",
-  checkAuth(Role.USER,Role.ADMIN),
+  checkAuth(Role.USER, Role.ADMIN),
   ReviewControllers.createReview
 );
 
 /**
- * Get all reviews for a travel plan (public)
+ * Get all reviews for a menu item (public)
  */
 router.get(
-  "/travel-plan/:travelPlanId",
-  ReviewControllers.getReviewsByTravelPlan
+  "/menu-item/:menuItemId",
+  ReviewControllers.getReviewsByMenuItem
 );
 
 /**
@@ -28,7 +28,7 @@ router.get(
  */
 router.patch(
   "/:id",
- checkAuth(Role.USER,Role.ADMIN),
+  checkAuth(Role.USER, Role.ADMIN),
   ReviewControllers.updateReview
 );
 
@@ -37,7 +37,7 @@ router.patch(
  */
 router.delete(
   "/:id",
- checkAuth(Role.USER,Role.ADMIN),
+  checkAuth(Role.USER, Role.ADMIN),
   ReviewControllers.deleteReview
 );
 
