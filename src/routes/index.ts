@@ -8,6 +8,7 @@ import { OtpRoutes } from "../modules/otp/otp.route"
 import { MenuRoutes } from "../modules/menu/menu.route"
 import { ReservationRoutes } from "../modules/reservation/reservation.route"
 import { OrderRoutes } from "../modules/order/order.route"
+import { TableRoutes } from "../modules/table/table.route"
 export const router = Router()
 
 const moduleRoutes = [
@@ -30,6 +31,10 @@ const moduleRoutes = [
     {
         path: "/orders",
         route: OrderRoutes
+    },
+    {
+        path: "/tables",
+        route: TableRoutes
     },
     {
         path: "/otp",

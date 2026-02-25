@@ -1,6 +1,16 @@
 import { IReservation } from "./reservation.interface";
 import { Reservation } from "./reservation.model";
 
+const checkExistingReservation = async (email: string, date: string, time: string) => {
+    const existing = await Reservation.findOne({
+        email,
+        date: new Date(date),
+        time,
+        status: { $ne: "cancelled" },
+    });
+    return existing;
+};
+
 const createReservation = async (payload: IReservation) => {
     const result = await Reservation.create(payload);
     return result;
@@ -30,4 +40,5 @@ export const ReservationServices = {
     getAllReservations,
     getMyReservations,
     updateReservationStatus,
+    checkExistingReservation,
 };
