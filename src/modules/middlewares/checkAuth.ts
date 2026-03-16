@@ -10,11 +10,17 @@ import { IsActive } from "../user/user.interface";
 export const checkAuth = (...authRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-         const accessToken = req.headers.authorization||req.cookies.accessToken;
+        let accessToken = req.headers.authorization || req.cookies.accessToken;
 
         if (!accessToken) {
             throw new AppError(403, "No Token Recieved")
         }
+
+        // Handle Bearer prefix if present
+        if (accessToken.startsWith('Bearer ')) {
+            accessToken = accessToken.split(' ')[1];
+        }
+
         const verifiedToken = verifyToken(accessToken, envVars.JWT_ACCESS_SECRET) as JwtPayload
 
         const isUserExist = await User.findOne({ email: verifiedToken.email })

@@ -13,6 +13,10 @@ const orderItemSchema = new Schema(
 const orderSchema = new Schema<IOrder>(
     {
         user: { type: Schema.Types.ObjectId, ref: "User" },
+        email: { type: String },
+        customerName: { type: String },
+        phone: { type: String },
+        address: { type: String },
         items: [orderItemSchema],
         totalAmount: { type: Number, required: true },
         tableNumber: { type: Number },

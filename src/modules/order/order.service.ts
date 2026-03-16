@@ -11,8 +11,21 @@ const getAllOrders = async () => {
     return result;
 };
 
-const getMyOrders = async (userId: string) => {
-    const result = await Order.find({ user: userId }).populate("items.menuItem");
+const getMyOrders = async (userId: string | undefined, email: string | undefined) => {
+    const query: any = {};
+    const orConditions = [];
+
+    if (userId) orConditions.push({ user: userId });
+    if (email) orConditions.push({ email: email });
+
+    if (orConditions.length > 0) {
+        query.$or = orConditions;
+    } else {
+        // If no identifying info, return nothing
+        return [];
+    }
+
+    const result = await Order.find(query).populate("items.menuItem");
     return result;
 };
 

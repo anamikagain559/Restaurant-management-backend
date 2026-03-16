@@ -58,8 +58,8 @@ const getAllReservations = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getMyReservations = catchAsync(async (req: Request, res: Response) => {
-    const userId = (req.user as any).userId;
-    const result = await ReservationServices.getMyReservations(userId);
+    const { userId, email } = req.user as any;
+    const result = await ReservationServices.getMyReservations(userId, email);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

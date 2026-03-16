@@ -21,8 +21,10 @@ const getAllReservations = async () => {
     return result;
 };
 
-const getMyReservations = async (userId: string) => {
-    const result = await Reservation.find({ user: userId });
+const getMyReservations = async (userId: string, email: string) => {
+    const result = await Reservation.find({
+        $or: [{ user: userId }, { email: email }],
+    });
     return result;
 };
 

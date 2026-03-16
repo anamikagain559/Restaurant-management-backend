@@ -11,7 +11,7 @@ import { IsActive } from "./user.interface"; // updated interface
 // Create new user
 const createUser = catchAsync(async (req: Request, res: Response) => {
     const user = await UserServices.createUser(req.body);
-
+  console.log('Received body:', req.body); 
     sendResponse(res, {
         success: true,
         statusCode: httpStatus.CREATED,
