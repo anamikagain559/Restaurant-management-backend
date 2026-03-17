@@ -16,22 +16,23 @@ passport_1.default.use(new passport_local_1.Strategy({
     passwordField: "password"
 }, async (email, password, done) => {
     try {
-        const isUserExist = await user_model_1.User.findOne({ email });
-        if (!isUserExist) {
-            return done("User does not exist");
+        console.log("Login attempt for:", email);
+        const isUserExist = await user_model_1.User.findOne({ email }).select("+password");
+        if (!isUserExist || !isUserExist.password) {
+            console.log("User or password missing. User exists:", !!isUserExist, "Hash exists:", !!isUserExist?.password);
+            return done(null, false, { message: "Invalid email or password" });
         }
-        const isGoogleAuthenticated = isUserExist.auths.some(providerObjects => providerObjects.provider == "google");
-        if (isGoogleAuthenticated && !isUserExist.password) {
-            return done(null, false, { message: "You have authenticated through Google. So if you want to login with credentials, then at first login with google and set a password for your Gmail and then you can login with email and password." });
-        }
+        console.log("User found. Has password:", !!isUserExist.password);
         const isPasswordMatched = await bcryptjs_1.default.compare(password, isUserExist.password);
         if (!isPasswordMatched) {
-            return done(null, false, { message: "Password does not match" });
+            console.log("Password mismatch for:", email);
+            return done(null, false, { message: "Invalid email or password" });
         }
+        console.log("Login successful for:", email);
         return done(null, isUserExist);
     }
     catch (error) {
-        console.log(error);
+        console.log("Passport Local Strategy Error:", error);
         done(error);
     }
 }));
@@ -68,10 +69,6 @@ passport_1.default.use(new passport_google_oauth20_1.Strategy({
         return done(error);
     }
 }));
-// frontend localhost:5173/login?redirect=/booking -> localhost:5000/api/v1/auth/google?redirect=/booking -> passport -> Google OAuth Consent -> gmail login -> successful -> callback url localhost:5000/api/v1/auth/google/callback -> db store -> token
-// Bridge == Google -> user db store -> token
-//Custom -> email , password, role : USER, name... -> registration -> DB -> 1 User create
-//Google -> req -> google -> successful : Jwt Token : Role , email -> DB - Store -> token - api access
 passport_1.default.serializeUser((user, done) => {
     done(null, user._id);
 });

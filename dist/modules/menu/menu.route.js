@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MenuRoutes = void 0;
+const express_1 = require("express");
+const menu_controller_1 = require("./menu.controller");
+const checkAuth_1 = require("../middlewares/checkAuth");
+const user_interface_1 = require("../user/user.interface");
+const router = (0, express_1.Router)();
+router.get("/", menu_controller_1.MenuControllers.getAllMenus);
+router.post("/", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), menu_controller_1.MenuControllers.createMenu);
+router.get("/:id", menu_controller_1.MenuControllers.getMenuById);
+router.patch("/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), menu_controller_1.MenuControllers.updateMenu);
+router.delete("/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), menu_controller_1.MenuControllers.deleteMenu);
+exports.MenuRoutes = router;

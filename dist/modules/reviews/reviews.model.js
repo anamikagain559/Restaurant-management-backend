@@ -4,18 +4,13 @@ exports.Review = void 0;
 const mongoose_1 = require("mongoose");
 const reviewSchema = new mongoose_1.Schema({
     reviewer: {
-        type: mongoose_1.Types.ObjectId,
+        type: mongoose_1.Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
-    reviewee: {
-        type: mongoose_1.Types.ObjectId,
-        ref: "User",
-        required: true,
-    },
-    travelPlan: {
-        type: mongoose_1.Types.ObjectId,
-        ref: "TravelPlan",
+    menuItem: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "Menu",
         required: true,
     },
     rating: {
@@ -28,6 +23,6 @@ const reviewSchema = new mongoose_1.Schema({
         type: String,
         trim: true,
     },
-}, { timestamps: true });
-reviewSchema.index({ reviewer: 1, travelPlan: 1 }, { unique: true });
+}, { timestamps: true, versionKey: false });
+reviewSchema.index({ reviewer: 1, menuItem: 1 }, { unique: true });
 exports.Review = (0, mongoose_1.model)("Review", reviewSchema);

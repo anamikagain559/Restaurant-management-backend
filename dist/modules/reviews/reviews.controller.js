@@ -8,42 +8,31 @@ const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const catchAsync_1 = require("../../utils/catchAsync");
 const sendResponse_1 = require("../../utils/sendResponse");
 const AppError_1 = __importDefault(require("../../errorHelpers/AppError"));
+const reviews_service_1 = require("./reviews.service");
+const menu_model_1 = require("../menu/menu.model");
 const reviews_model_1 = require("./reviews.model");
-const travelPlan_model_1 = require("../travelPlan/travelPlan.model");
-/**
- * CREATE REVIEW
- * Only logged-in users can create a review for a travel plan
- */
 const createReview = (0, catchAsync_1.catchAsync)(async (req, res) => {
-    const decodedToken = req.user;
-    const { travelPlan, rating, comment } = req.body;
-    if (!travelPlan) {
-        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Travel plan ID is required");
+    const userId = req.user.userId;
+    const { menuItem, rating, comment } = req.body;
+    if (!menuItem) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Menu item ID is required");
     }
-    if (!rating || rating < 1 || rating > 5) {
-        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Rating must be between 1 and 5");
+    // Check if menu item exists
+    const item = await menu_model_1.Menu.findById(menuItem);
+    if (!item) {
+        throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "Menu item not found");
     }
-    // 🔐 Find travel plan to get owner (reviewee)
-    const plan = await travelPlan_model_1.TravelPlan.findById(travelPlan).select("user");
-    if (!plan) {
-        throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "Travel plan not found");
-    }
-    // ❌ Prevent reviewing own plan
-    if (plan.user.toString() === decodedToken.userId) {
-        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "You cannot review your own travel plan");
-    }
-    // ❌ Prevent duplicate review
+    // Prevent duplicate review
     const alreadyReviewed = await reviews_model_1.Review.findOne({
-        travelPlan,
-        reviewer: decodedToken.userId,
+        menuItem,
+        reviewer: userId,
     });
     if (alreadyReviewed) {
-        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "You have already reviewed this travel plan");
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "You have already reviewed this menu item");
     }
-    const review = await reviews_model_1.Review.create({
-        reviewer: decodedToken.userId, // logged-in user
-        reviewee: plan.user, // ✅ REQUIRED FIELD
-        travelPlan,
+    const result = await reviews_service_1.ReviewServices.createReview({
+        reviewer: userId,
+        menuItem,
         rating,
         comment,
     });
@@ -51,56 +40,41 @@ const createReview = (0, catchAsync_1.catchAsync)(async (req, res) => {
         success: true,
         statusCode: http_status_codes_1.default.CREATED,
         message: "Review created successfully",
-        data: review,
+        data: result,
     });
 });
-/**
- * GET REVIEWS BY TRAVEL PLAN
- * Public endpoint
- */
-const getReviewsByTravelPlan = (0, catchAsync_1.catchAsync)(async (req, res) => {
-    const { travelPlanId } = req.params;
-    if (!travelPlanId) {
-        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Travel plan ID is required");
+const getReviewsByMenuItem = (0, catchAsync_1.catchAsync)(async (req, res) => {
+    const { menuItemId } = req.params;
+    if (!menuItemId) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Menu item ID is required");
     }
-    const reviews = await reviews_model_1.Review.find({ travelPlan: travelPlanId })
-        .populate("reviewer", "name email")
-        .sort({ createdAt: -1 });
+    const result = await reviews_service_1.ReviewServices.getReviewsByMenuItem(menuItemId);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: http_status_codes_1.default.OK,
         message: "Reviews retrieved successfully",
-        data: reviews,
+        data: result,
     });
 });
-/**
- * UPDATE OWN REVIEW
- */
 const updateReview = (0, catchAsync_1.catchAsync)(async (req, res) => {
-    const decodedToken = req.user;
+    const userId = req.user.userId;
     const { id } = req.params;
-    const review = await reviews_model_1.Review.findOneAndUpdate({ _id: id, reviewer: decodedToken.userId }, req.body, { new: true, runValidators: true });
-    if (!review) {
+    const result = await reviews_service_1.ReviewServices.updateReview(id, userId, req.body);
+    if (!result) {
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "Review not found or you are not authorized to update it");
     }
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: http_status_codes_1.default.OK,
         message: "Review updated successfully",
-        data: review,
+        data: result,
     });
 });
-/**
- * DELETE OWN REVIEW
- */
 const deleteReview = (0, catchAsync_1.catchAsync)(async (req, res) => {
-    const decodedToken = req.user;
+    const userId = req.user.userId;
     const { id } = req.params;
-    const review = await reviews_model_1.Review.findOneAndDelete({
-        _id: id,
-        reviewer: decodedToken.userId,
-    });
-    if (!review) {
+    const result = await reviews_service_1.ReviewServices.deleteReview(id, userId);
+    if (!result) {
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "Review not found or you are not authorized to delete it");
     }
     (0, sendResponse_1.sendResponse)(res, {
@@ -112,7 +86,7 @@ const deleteReview = (0, catchAsync_1.catchAsync)(async (req, res) => {
 });
 exports.ReviewControllers = {
     createReview,
-    getReviewsByTravelPlan,
+    getReviewsByMenuItem,
     updateReview,
     deleteReview,
 };

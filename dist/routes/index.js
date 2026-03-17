@@ -5,9 +5,12 @@ const express_1 = require("express");
 const auth_route_1 = require("../modules/auth/auth.route");
 const user_route_1 = require("../modules/user/user.route");
 const reviews_route_1 = require("../modules/reviews/reviews.route");
-const travelPlan_route_1 = require("../modules/travelPlan/travelPlan.route");
 const payment_route_1 = require("../modules/payments/payment.route");
 const otp_route_1 = require("../modules/otp/otp.route");
+const menu_route_1 = require("../modules/menu/menu.route");
+const reservation_route_1 = require("../modules/reservation/reservation.route");
+const order_route_1 = require("../modules/order/order.route");
+const table_route_1 = require("../modules/table/table.route");
 exports.router = (0, express_1.Router)();
 const moduleRoutes = [
     {
@@ -19,9 +22,22 @@ const moduleRoutes = [
         route: auth_route_1.AuthRoutes
     },
     {
-        path: "/travel-plans",
-        route: travelPlan_route_1.TravelPlanRoutes
-    }, {
+        path: "/menu",
+        route: menu_route_1.MenuRoutes
+    },
+    {
+        path: "/reservations",
+        route: reservation_route_1.ReservationRoutes
+    },
+    {
+        path: "/orders",
+        route: order_route_1.OrderRoutes
+    },
+    {
+        path: "/tables",
+        route: table_route_1.TableRoutes
+    },
+    {
         path: "/otp",
         route: otp_route_1.OtpRoutes
     },

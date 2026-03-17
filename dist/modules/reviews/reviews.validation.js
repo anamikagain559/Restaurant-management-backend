@@ -1,33 +1,20 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.agentCashOutSchema = exports.agentCashInSchema = exports.transferSchema = exports.withdrawSchema = exports.depositSchema = void 0;
-const zod_1 = require("zod");
-const reviews_constant_1 = require("./reviews.constant");
-exports.depositSchema = zod_1.z.object({
-    amount: zod_1.z
-        .number({ message: "amount must be a number" })
-        .min(reviews_constant_1.MIN_TOPUP_AMOUNT, `Minimum deposit is ${reviews_constant_1.MIN_TOPUP_AMOUNT}`),
+exports.updateReviewZodSchema = exports.createReviewZodSchema = void 0;
+const zod_1 = __importDefault(require("zod"));
+exports.createReviewZodSchema = zod_1.default.object({
+    body: zod_1.default.object({
+        menuItem: zod_1.default.string({ message: "Menu item ID is required" }),
+        rating: zod_1.default.number({ message: "Rating is required" }).min(1).max(5),
+        comment: zod_1.default.string().optional(),
+    }),
 });
-exports.withdrawSchema = zod_1.z.object({
-    amount: zod_1.z
-        .number({ message: "amount must be a number" })
-        .min(reviews_constant_1.MIN_WITHDRAW_AMOUNT, `Minimum withdraw is ${reviews_constant_1.MIN_WITHDRAW_AMOUNT}`),
-});
-exports.transferSchema = zod_1.z.object({
-    toUserId: zod_1.z.string().nonempty("toUserId is required"),
-    amount: zod_1.z
-        .number({ message: "amount must be a number" })
-        .min(reviews_constant_1.MIN_TRANSFER_AMOUNT, `Minimum transfer is ${reviews_constant_1.MIN_TRANSFER_AMOUNT}`),
-});
-exports.agentCashInSchema = zod_1.z.object({
-    userId: zod_1.z.string().nonempty("userId is required"),
-    amount: zod_1.z
-        .number({ message: "amount must be a number" })
-        .min(reviews_constant_1.MIN_TOPUP_AMOUNT, `Minimum cash-in is ${reviews_constant_1.MIN_TOPUP_AMOUNT}`),
-});
-exports.agentCashOutSchema = zod_1.z.object({
-    userId: zod_1.z.string().nonempty("userId is required"),
-    amount: zod_1.z
-        .number({ message: "amount must be a number" })
-        .min(reviews_constant_1.MIN_WITHDRAW_AMOUNT, `Minimum cash-out is ${reviews_constant_1.MIN_WITHDRAW_AMOUNT}`),
+exports.updateReviewZodSchema = zod_1.default.object({
+    body: zod_1.default.object({
+        rating: zod_1.default.number().min(1).max(5).optional(),
+        comment: zod_1.default.string().optional(),
+    }),
 });

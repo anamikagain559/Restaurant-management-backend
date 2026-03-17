@@ -24,8 +24,7 @@ app.use(passport_1.default.session());
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 const allowedOrigins = [
-    "https://digital-wallet-frontend-rho.vercel.app",
-    "http://localhost:3000",
+    "http://localhost:5173",
 ];
 app.use((0, cors_1.default)({
     origin: (origin, callback) => {
@@ -42,7 +41,7 @@ app.use((0, cors_1.default)({
 app.use("/api/v1", routes_1.router);
 app.get("/", (req, res) => {
     res.status(200).json({
-        message: "Welcome to Tour Management System Backend"
+        message: "Welcome to Restaurant Management System Backend"
     });
 });
 app.use(globalErrorHandler_1.globalErrorHandler);

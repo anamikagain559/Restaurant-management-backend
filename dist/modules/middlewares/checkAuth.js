@@ -12,9 +12,13 @@ const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const user_interface_1 = require("../user/user.interface");
 const checkAuth = (...authRoles) => async (req, res, next) => {
     try {
-        const accessToken = req.headers.authorization || req.cookies.accessToken;
+        let accessToken = req.headers.authorization || req.cookies.accessToken;
         if (!accessToken) {
             throw new AppError_1.default(403, "No Token Recieved");
+        }
+        // Handle Bearer prefix if present
+        if (accessToken.startsWith('Bearer ')) {
+            accessToken = accessToken.split(' ')[1];
         }
         const verifiedToken = (0, jwt_1.verifyToken)(accessToken, env_1.envVars.JWT_ACCESS_SECRET);
         const isUserExist = await user_model_1.User.findOne({ email: verifiedToken.email });

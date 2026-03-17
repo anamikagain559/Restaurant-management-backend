@@ -30,7 +30,7 @@ const updateUser = async (userId: string, payload: Partial<IUser>, decodedToken:
 
     // Only admin can change role/isActive/isDeleted
     if (payload.role || payload.isActive || payload.isDeleted || payload.isVerified) {
-        if (decodedToken.role === Role.CUSTOMER) {
+        if (decodedToken.role === Role.USER) {
             throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
         }
     }

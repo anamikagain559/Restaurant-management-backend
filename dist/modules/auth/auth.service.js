@@ -45,7 +45,7 @@ const getNewAccessToken = async (refreshToken) => {
     };
 };
 const resetPassword = async (oldPassword, newPassword, decodedToken) => {
-    const user = await user_model_1.User.findById(decodedToken.userId);
+    const user = await user_model_1.User.findById(decodedToken.userId).select("+password");
     const isOldPasswordMatch = await bcryptjs_1.default.compare(oldPassword, user.password);
     if (!isOldPasswordMatch) {
         throw new AppError_1.default(http_status_codes_1.default.UNAUTHORIZED, "Old Password does not match");
@@ -55,7 +55,7 @@ const resetPassword = async (oldPassword, newPassword, decodedToken) => {
 };
 //user - login - token (email, role, _id) - booking / payment / booking / payment cancel - token 
 const changePassword = async (oldPassword, newPassword, decodedToken) => {
-    const user = await user_model_1.User.findById(decodedToken.userId);
+    const user = await user_model_1.User.findById(decodedToken.userId).select("+password");
     const isOldPasswordMatch = await bcryptjs_1.default.compare(oldPassword, user.password);
     if (!isOldPasswordMatch) {
         throw new AppError_1.default(http_status_codes_1.default.UNAUTHORIZED, "Old Password does not match");
