@@ -23,6 +23,7 @@ app.use(cookieParser())
 app.use(express.json())
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://restaurant-management-frontend-two.vercel.app",
 ];
 
 app.use(

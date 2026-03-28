@@ -25,6 +25,7 @@ app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 const allowedOrigins = [
     "http://localhost:5173",
+    "https://restaurant-management-frontend-two.vercel.app",
 ];
 app.use((0, cors_1.default)({
     origin: (origin, callback) => {
