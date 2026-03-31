@@ -6,18 +6,11 @@ import httpStatus from "http-status-codes";
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
     const orderData = req.body;
-    
+
     // Auto-associate user if logged in
-    const user = req.user as any;
-    const userId = user?.userId || user?._id || user?.id;
-    
+    const userId = (req.user as any)?.userId;
     if (userId) {
         orderData.user = userId;
-    }
-    
-    // Ensure email is set from token if not already present
-    if (!orderData.email && user?.email) {
-        orderData.email = user.email;
     }
 
     const result = await OrderServices.createOrder(orderData);
@@ -40,9 +33,7 @@ const getAllOrders = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getMyOrders = catchAsync(async (req: Request, res: Response) => {
-    const user = req.user as any;
-    const userId = user?.userId || user?._id || user?.id;
-    const email = user?.email;
+    const { userId, email } = req.user as any;
 
     const result = await OrderServices.getMyOrders(userId, email);
     sendResponse(res, {
